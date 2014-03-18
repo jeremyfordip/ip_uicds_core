@@ -1,0 +1,98 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.saic.uicds</groupId>
+    <artifactId>com.saic.uicds.core</artifactId>
+    <!--
+        DO NOT cahnge!!! This is not the jar version number ... see infrastructure.version at end of
+        this file
+    -->
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+    <name>com.saic.uicds.core</name>
+    <modules>
+        <module>em</module>
+        <module>infrastructure</module>
+    </modules>
+
+    <repositories>
+        <repository>
+            <id>UICDS</id>
+            <name>uicds</name>
+            <url>https://svn.uicds.leidos.com/repository</url>
+        </repository>
+    </repositories>
+
+    <build>
+        <!-- Set the version and encoding for the maven resources plugin -->
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>2.3</version>
+                    <configuration>
+                        <encoding>UTF-8</encoding>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${javadoc.plugin.version}</version>
+                <configuration>
+                    <aggregate>true</aggregate>
+                    <!-- PDFDoclet -->
+                    <doclet>com.tarsec.javadoc.pdfdoclet.PDFDoclet</doclet>
+                    <docletArtifacts>
+                        <docletArtifact>
+                            <groupId>com.tarsec.javadoc.pdfdoclet</groupId>
+                            <artifactId>pdfdoclet</artifactId>
+                            <version>1.0.5</version>
+                        </docletArtifact>
+                        <docletArtifact>
+                            <groupId>log4j</groupId>
+                            <artifactId>log4j</artifactId>
+                            <version>1.2.8</version>
+                        </docletArtifact>
+                        <docletArtifact>
+                            <groupId>itext</groupId>
+                            <artifactId>itext</artifactId>
+                            <version>1.3.1</version>
+                        </docletArtifact>
+                        <docletArtifact>
+                            <groupId>org.hibernate</groupId>
+                            <artifactId>jtidy-r8</artifactId>
+                            <version>21122004</version>
+                        </docletArtifact>
+                        <docletArtifact>
+                            <groupId>junit</groupId>
+                            <artifactId>junit</artifactId>
+                            <version>3.8.1</version>
+                        </docletArtifact>
+                    </docletArtifacts>
+                    <useStandardDocletOptions>false</useStandardDocletOptions>
+                    <additionalparam>-pdf ${basedir}/../doc/UICDS_IDD.pdf -workdir ${basedir}/../doc
+                        -config ${basedir}/../doc/config_idd.txt </additionalparam>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
+    <properties>
+        <javadoc.plugin.version>2.9.1</javadoc.plugin.version>
+    </properties>
+</project>

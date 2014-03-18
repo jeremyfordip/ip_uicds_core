@@ -46,11 +46,11 @@
             <name>Easymock External Repository</name>
             <url>http://www.easymock.org/maven/repository</url>
         </repository>
-        <repository>
+       <!-- <repository>
             <id>UICDS</id>
             <name>uicds</name>
             <url>https://svn.uicds.leidos.com/repository</url>
-        </repository>
+        </repository>-->
     </repositories>
     <build>
         <!-- Set the version and encoding for the maven resources plugin -->

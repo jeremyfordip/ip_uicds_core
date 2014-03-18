@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.saic.uicds</groupId>
     <artifactId>com.saic.uicds.core</artifactId>
@@ -15,13 +15,40 @@
         <module>infrastructure</module>
     </modules>
 
-    <repositories>
+
+    <!-- Source Control Configuration -->
+    <scm>
+        <connection>scm:svn:http://svn.intelligentpathways.com.au/uicds-core/trunk/</connection>
+        <!-- <developerConnection>scm:svn:svn.intelligentpathways.com.au/dcs/trunk/</developerConnection>
+         <url>scm:svn:svn://svn.intelligentpathways.com.au/uicds-core/trunk/</url>-->
+    </scm>
+    <organization>
+        <name>Intelligent Pathways</name>
+        <url>http://intelligentpathways.com.au/</url>
+    </organization>
+
+    <distributionManagement>
         <repository>
-            <id>UICDS</id>
-            <name>uicds</name>
-            <url>https://svn.uicds.leidos.com/repository</url>
+            <id>releases</id>
+            <name>IP Releases</name>
+            <url>http://artifactory.intelligentpathways.com.au/artifactory/releases/</url>
         </repository>
-    </repositories>
+
+
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>IP Snapshots</name>
+            <url>http://artifactory.intelligentpathways.com.au/artifactory/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <!-- <repositories>
+         <repository>
+             <id>UICDS</id>
+             <name>uicds</name>
+             <url>https://svn.uicds.leidos.com/repository</url>
+         </repository>
+     </repositories>-->
 
     <build>
         <!-- Set the version and encoding for the maven resources plugin -->
@@ -44,6 +71,33 @@
                 <configuration>
                     <source>1.6</source>
                     <target>1.6</target>
+                </configuration>
+            </plugin>
+
+            <!-- support release management against SCM -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.0</version>
+                <configuration>
+                    <!-- ensure maven can commit across multiple projects (this is a workaround for a bug in the SVN client) -->
+                    <remoteTagging>true</remoteTagging>
+                    <!-- During release:perform, enable the "release" profile -->
+                    <releaseProfiles>release</releaseProfiles>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <goals>deploy</goals>
+                    <tagBase>
+                        http://svn.intelligentpathways.com.au/uicds-core/tags
+                    </tagBase>
+                </configuration>
+            </plugin>
+            <!-- use developer connection for SCM activity -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-scm-plugin</artifactId>
+                <version>1.4</version>
+                <configuration>
+                    <connectionType>developerConnection</connectionType>
                 </configuration>
             </plugin>
         </plugins>

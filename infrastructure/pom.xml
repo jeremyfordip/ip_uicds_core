@@ -20,13 +20,13 @@
     </modules>
 
     <!-- define distribution management to make deploy plugin happy -->
-    <distributionManagement>
+   <!-- <distributionManagement>
         <repository>
             <id>UICDS</id>
             <name>uicds</name>
             <url>dav:https://svn.uicds.leidos.com/repository</url>
         </repository>
-    </distributionManagement>
+    </distributionManagement>-->
 
     <dependencies>
         <dependency>
@@ -88,10 +88,15 @@
 
 
     <repositories>
-        <repository>
+       <!-- <repository>
             <id>UICDS</id>
             <name>uicds</name>
             <url>https://svn.uicds.leidos.com/repository</url>
+        </repository>-->
+        <repository>
+            <id>ext-release-local</id>
+            <name>IP ext-release-local</name>
+            <url>http://artifactory.intelligentpathways.com.au/artifactory/ext-release-local</url>
         </repository>
         <repository>
             <id>MVN Repository</id>

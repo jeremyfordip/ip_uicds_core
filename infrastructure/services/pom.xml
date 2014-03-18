@@ -13,18 +13,24 @@
     <version>${infrastructure.version}</version>
 
     <!-- define distribution management to make deploy plugin happy -->
-    <distributionManagement>
+    <!--<distributionManagement>
         <snapshotRepository>
             <id>UICDS</id>
             <name>uicds</name>
             <url>dav:https://svn.uicds.leidos.com/repository</url>
         </snapshotRepository>
-    </distributionManagement>
+    </distributionManagement>-->
     <repositories>
         <repository>
             <id>tuscany</id>
             <name>tuscany</name>
             <url>http://svn.apache.org/repos/asf/tuscany/maven/</url>
+        </repository>
+
+        <repository>
+            <id>ext-release-local</id>
+            <name>IP ext-release-local</name>
+            <url>http://artifactory.intelligentpathways.com.au/artifactory/ext-release-local</url>
         </repository>
 
         <!-- repository>
@@ -262,13 +268,13 @@
         </dependency>
         <dependency>
             <groupId>exist</groupId>
-			<artifactId>xmldb</artifactId>
-			<version>1.0</version>
+            <artifactId>xmldb</artifactId>
+            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>exist</groupId>
             <artifactId>exist</artifactId>
-			<version>1.4</version>
+            <version>1.4</version>
         </dependency>
         <dependency>
             <groupId>org.apache.xmlrpc</groupId>
@@ -290,9 +296,9 @@
             <type>jar</type>
         </dependency>
         <dependency>
-        	<groupId>org.apache.maven.plugins</groupId>
-        	<artifactId>maven-javadoc-plugin</artifactId>
-        	<version>2.9.1</version>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>2.9.1</version>
         </dependency>
 
     </dependencies>

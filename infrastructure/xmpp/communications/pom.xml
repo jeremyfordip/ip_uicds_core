@@ -14,13 +14,13 @@
 
 
     <!-- define distribution management to make deploy plugin happy -->
-    <distributionManagement>
+    <!--<distributionManagement>
         <repository>
             <id>UICDS</id>
             <name>uicds</name>
             <url>dav:https://svn.uicds.leidos.com/repository</url>
         </repository>
-    </distributionManagement>
+    </distributionManagement>-->
 
     <dependencies>
         <dependency>

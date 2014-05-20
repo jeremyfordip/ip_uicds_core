@@ -24,7 +24,6 @@ import org.slf4j.LoggerFactory;
  * @author topher
  * @ssdd
  */
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "WORK_PRODUCTS")
 /**

@@ -542,12 +542,14 @@ public class IncidentManagementServiceImpl
 
     /**
      * Gets the incident description info from the incident identifier.
-     * 
+     *
+     * NOT synchronized
+     *
      * @param incidentID the incident id
      * @return the incident info
      * @ssdd
      */
-    public synchronized IncidentInfoType getIncidentInfo(String incidentID) {
+    public IncidentInfoType getIncidentInfo(String incidentID) {
 
         InterestGroupInfo igInfo = interestGroupManagementComponent.getInterestGroup(incidentID);
         Incident incident = incidentDAO.findByIncidentID(incidentID);
@@ -578,12 +580,14 @@ public class IncidentManagementServiceImpl
 
     /**
      * Gets the list of closed incident.
-     * 
+     *
+     * Not: synchronized
+     *
      * @return the list of closed incident
      * @ssdd
      */
     @Override
-    public synchronized String[] getListOfClosedIncident() {
+    public String[] getListOfClosedIncident() {
 
         List<Incident> closedIncidents = incidentDAO.findAllClosedIncident();
         String[] incidentIDList = null;
@@ -600,12 +604,14 @@ public class IncidentManagementServiceImpl
 
     /**
      * Gets the list of incidents.
-     * 
+     *
+     * Not: synchronized
+     *
      * @return the list of incidents
      * @ssdd
      */
     @Override
-    public synchronized IncidentListType getListOfIncidents() {
+    public IncidentListType getListOfIncidents() {
 
         IncidentListType response = IncidentListType.Factory.newInstance();
         List<Incident> incidents = incidentDAO.findAll();
@@ -631,12 +637,14 @@ public class IncidentManagementServiceImpl
 
     /**
      * Gets the list of incident work products.
-     * 
+     *
+     * Not: synchronized
+     *
      * @return the list of incident work products
      * @ssdd
      */
     @Override
-    public synchronized ArrayList<WorkProduct> getIncidentList() {
+    public ArrayList<WorkProduct> getIncidentList() {
 
         ArrayList<WorkProduct> workProducts = new ArrayList<WorkProduct>();
 
@@ -725,7 +733,12 @@ public class IncidentManagementServiceImpl
         }
     }
 
-    public synchronized void newJoinedInterestGroupHandler(
+    /**
+     * Not: synchronized
+     *
+     * @param message
+     */
+    public void newJoinedInterestGroupHandler(
         JoinedInterestGroupNotificationMessage message) {
 
         log.info("newJoinedInterestGroupHandler: receive new joined incident notification incidentID="
@@ -910,7 +923,14 @@ public class IncidentManagementServiceImpl
      */
 
     // persist the incident model
-    private synchronized void persistIncident(UICDSIncidentType incident, String incidentWPID) {
+
+    /**
+     * Not: synchronized
+     *
+     * @param incident
+     * @param incidentWPID
+     */
+    private void persistIncident(UICDSIncidentType incident, String incidentWPID) {
 
         String incidentID = getIncidentID(incident);
 

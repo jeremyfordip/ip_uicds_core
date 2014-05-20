@@ -39,10 +39,10 @@ public class WorkProductMSSQLDB2DAO
      */
     @SuppressWarnings("static-access")
     @Override
-    public synchronized WorkProduct makePersistent(WorkProduct entity) {
+    public WorkProduct makePersistent(WorkProduct entity) {
 
     	if (log.isInfoEnabled())
-    		log.info("makePersistent");
+    		log.info("WorkProduct::makePersistent");
     	Session s = getSession();
     	
     	if (entity == null)

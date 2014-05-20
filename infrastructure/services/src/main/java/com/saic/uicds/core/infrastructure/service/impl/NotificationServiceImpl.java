@@ -254,7 +254,7 @@ public class NotificationServiceImpl
      */
     @Override
     @Transactional
-    public synchronized IdentificationType[] getMatchingMessages(String entityId) {
+    public /* synchronized */ IdentificationType[] getMatchingMessages(String entityId) {
 
         IdentificationType[] identifications = null;
 
@@ -294,7 +294,7 @@ public class NotificationServiceImpl
      * 
      * @ssdd
      */
-    public synchronized void sendSunscriberInterface() {
+    public /* synchronized */ void sendSunscriberInterface() {
 
         // search all notifications and update any subscription msgs which have specified ID
         List<Notification> notifications = notificationDAO.findAll();
@@ -311,7 +311,7 @@ public class NotificationServiceImpl
      * @ssdd
      */
     @Override
-    public synchronized EndpointReferenceType createPullPoint(String entityID) {
+    public /* synchronized */ EndpointReferenceType createPullPoint(String entityID) {
 
         XmlOptions options = new XmlOptions();
         options.setSaveInner();
@@ -343,7 +343,7 @@ public class NotificationServiceImpl
     }
 
     @Override
-    public synchronized boolean destroyPullPoint(String entityID) {
+    public /* synchronized */ boolean destroyPullPoint(String entityID) {
 
         Notification notification = notificationDAO.findByEntityId(entityID);
         if (notification == null) {
@@ -380,7 +380,7 @@ public class NotificationServiceImpl
      * @return the pull point or null if one doesn't exist for the entity id
      * @ssdd
      */
-    public synchronized EndpointReferenceType getPullPoint(String entityID) {
+    public /* synchronized */ EndpointReferenceType getPullPoint(String entityID) {
 
         EndpointReferenceType endpoint = null;
         Notification notification = notificationDAO.findByEntityId(entityID);
@@ -408,7 +408,7 @@ public class NotificationServiceImpl
      * @param isWebService the is web service
      * @ssdd
      */
-    public synchronized void updateEndpoint(String entityID, String endpointAddress,
+    public /* synchronized */ void updateEndpoint(String entityID, String endpointAddress,
         boolean isWebService) {
 
         EndpointReferenceType endpoint = null;
@@ -435,7 +435,7 @@ public class NotificationServiceImpl
      */
     @Override
     @Transactional
-    public synchronized NotificationMessageHolderType[] getMessages(String entityID, int num) {
+    public /* synchronized */ NotificationMessageHolderType[] getMessages(String entityID, int num) {
 
         NotificationMessageHolderType[] response = null;
 
@@ -612,7 +612,7 @@ public class NotificationServiceImpl
      * @ssdd
      */
     @Override
-    public synchronized void InvalidXpathNotification(Integer subscriptionId, String errorMessage) {
+    public /* synchronized */ void InvalidXpathNotification(Integer subscriptionId, String errorMessage) {
 
         // search all notifications and update any subscription msgs which have specified ID
         for (Notification notification : notificationDAO.findAll()) {
@@ -655,7 +655,7 @@ public class NotificationServiceImpl
      */
     @Override
     // @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public synchronized void newWorkProductVersion(final String productID,
+    public /* synchronized */ void newWorkProductVersion(final String productID,
         final Integer subscriptionId) {
 
         // get the product
@@ -859,7 +859,7 @@ public class NotificationServiceImpl
      * @ssdd
      */
     @Override
-    public synchronized void notify(String entityID, NotificationMessageHolderType[] notifications) {
+    public /* synchronized */ void notify(String entityID, NotificationMessageHolderType[] notifications) {
 
         // find Notification for desired entityID
         log.debug("Notify entityID: " + entityID);
@@ -1008,7 +1008,7 @@ public class NotificationServiceImpl
      * @ssdd
      */
     @Override
-    public synchronized Integer subscribeWorkProductID(String workProductID, String entityID)
+    public /* synchronized */ Integer subscribeWorkProductID(String workProductID, String entityID)
         throws InvalidProductIDException, NullSubscriberException, EmptySubscriberNameException {
 
         // Sub with PubSub
@@ -1042,7 +1042,7 @@ public class NotificationServiceImpl
      * @ssdd
      */
     @Override
-    public synchronized Integer subscribeWorkProductType(String wpType, String xpContext,
+    public /* synchronized */ Integer subscribeWorkProductType(String wpType, String xpContext,
         Map<String, String> namespaceMap, String entityID) throws InvalidProductTypeException,
         NullSubscriberException, EmptySubscriberNameException {
 
@@ -1077,7 +1077,7 @@ public class NotificationServiceImpl
      * @throws EmptySubscriberNameException the empty subscriber name exception
      * @ssdd
      */
-    public synchronized Integer subscribeIncidentIdAndWorkProductType(String wpType,
+    public /* synchronized */ Integer subscribeIncidentIdAndWorkProductType(String wpType,
         String incidentID, String xpContext, Map<String, String> namespaceMap, String entityID)
         throws InvalidProductTypeException, NullSubscriberException, EmptySubscriberNameException {
 
@@ -1109,7 +1109,7 @@ public class NotificationServiceImpl
      * @ssdd
      */
     @Override
-    public synchronized void subscribeProfile(String profileID, String entityID)
+    public /* synchronized */ void subscribeProfile(String profileID, String entityID)
         throws InvalidProductIDException, NullSubscriberException, EmptySubscriberNameException {
 
         // create/update notification and persist
@@ -1153,7 +1153,7 @@ public class NotificationServiceImpl
      * @ssdd
      */
     @Override
-    public synchronized void subscribeAgreement(String agreementID, String entityID)
+    public /* synchronized */ void subscribeAgreement(String agreementID, String entityID)
         throws InvalidProductIDException, NullSubscriberException, EmptySubscriberNameException {
 
         // create/update notification and persist
@@ -1238,7 +1238,7 @@ public class NotificationServiceImpl
      * @ssdd
      */
     @Override
-    public synchronized void workProductDeleted(
+    public /* synchronized */ void workProductDeleted(
         ProductChangeNotificationMessage productChangedMessage, Integer subscriptionId) {
 
         // search all notifications and update any subscription msgs which have specified ID
@@ -1309,7 +1309,7 @@ public class NotificationServiceImpl
      */
 
     // @Transactional
-    private synchronized void clearNotificationMessages(Notification notification) {
+    private /* synchronized */ void clearNotificationMessages(Notification notification) {
 
         notification.clearMessages();
         notificationDAO.makePersistent(notification);
@@ -1326,7 +1326,7 @@ public class NotificationServiceImpl
      */
 
     // @Transactional
-    private synchronized void addNotificationMessage(Notification notification,
+    private /* synchronized */ void addNotificationMessage(Notification notification,
         Integer subscriptionID, String msgType, String message) {
 
         notification.addMessage(subscriptionID, msgType, message);
@@ -1341,7 +1341,7 @@ public class NotificationServiceImpl
      * @ssdd
      */
     // @Transactional
-    private synchronized void addNotificationSubscription(Notification notification,
+    private /* synchronized */ void addNotificationSubscription(Notification notification,
         NotificationSubscription subscription) {
 
         notification.addSubscription(subscription);
@@ -1350,13 +1350,13 @@ public class NotificationServiceImpl
     }
 
     // @Transactional
-    private synchronized Notification makePersistent(Notification notification) {
+    private /* synchronized */ Notification makePersistent(Notification notification) {
 
         return notificationDAO.makePersistent(notification);
     }
 
     // @Transactional
-    private synchronized void makeTransient(Notification notification) {
+    private /* synchronized */ void makeTransient(Notification notification) {
 
         notificationDAO.makeTransient(notification);
     }

@@ -318,7 +318,7 @@ public class DirectoryServiceImpl implements DirectoryService {
      * @ssdd
      */
     @Override
-    public synchronized CoreConfigListType getCoreList() {
+    public /*synchronized*/ CoreConfigListType getCoreList() {
 
         // Get list of cores from Communications Service
 
@@ -353,7 +353,7 @@ public class DirectoryServiceImpl implements DirectoryService {
      * @ssdd
      */
     @Override
-    public synchronized CoreConfigType getCoreConfig(String coreName) {
+    public /*synchronized*/ CoreConfigType getCoreConfig(String coreName) {
 
         // Get list of cores from Communications Service
 

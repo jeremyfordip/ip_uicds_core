@@ -31,7 +31,7 @@ public class IcsGenerator
     private WorkProductService workProductService;
 
     // used for testing
-    private OrganizationElementDocument organizationDocument;
+   // private OrganizationElementDocument organizationDocument;
 
     final public static String CAP_GEO_TYPE = "Geo";
     final public static String CAP_MET_TYPE = "Met";
@@ -65,15 +65,15 @@ public class IcsGenerator
         workProductService = wps;
     }
 
-    public OrganizationElementDocument getOrgDoc() {
+   /* public OrganizationElementDocument getOrgDoc() {
 
         return organizationDocument;
-    }
+    }*/
 
     public IcsGenerator() {
 
-        organizationDocument = OrganizationElementDocument.Factory.newInstance();
-        organizationDocument.addNewOrganizationElement();
+       // organizationDocument = OrganizationElementDocument.Factory.newInstance();
+       // organizationDocument.addNewOrganizationElement();
     }
 
     /*
@@ -124,7 +124,7 @@ public class IcsGenerator
     private void handleUpdateIncident(IncidentStateNotificationMessage message) {
 
         log.debug("handleUpdateIncident");
-
+        OrganizationElementDocument organizationDocument = null;
         // Get the incident document
         String incidentProductID = message.getIncidentInfo().getWorkProductIdentification().getIdentifier().getStringValue();
         String incidentID = message.getIncidentInfo().getId();
@@ -236,14 +236,14 @@ public class IcsGenerator
             workProductID, orgDoc, incidentID);
         log.debug("New Organization publication status: " + stat.getStatus());
 
-        setLastOrganizationDocument(orgDoc);
+        //setLastOrganizationDocument(orgDoc);
     }
 
-    // should only
+    /*// should only
     private synchronized void setLastOrganizationDocument(OrganizationElementDocument orgDoc) {
 
         organizationDocument = (OrganizationElementDocument) orgDoc.copy();
-    }
+    }*/
 
     private void makeSimpleICS(OrganizationElementDocument orgDoc) {
 

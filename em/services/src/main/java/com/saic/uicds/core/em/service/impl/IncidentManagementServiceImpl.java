@@ -121,7 +121,7 @@ public class IncidentManagementServiceImpl
 
     private javax.xml.transform.Transformer transformer;
 
-    private DigestGenerator digestGenerator;
+    //private DigestGenerator digestGenerator;
 
     private UICDSIncidentType alertToIncident(Alert alert) {
 
@@ -394,7 +394,7 @@ public class IncidentManagementServiceImpl
             xsltFilePath = "xslt/IncidentDigest.xsl";
         if (iconConfigXmlFilePath == null)
             iconConfigXmlFilePath = "xml/types_icons.xml";
-        digestGenerator = new DigestGenerator(xsltFilePath, iconConfigXmlFilePath);
+        DigestGenerator digestGenerator = new DigestGenerator(xsltFilePath, iconConfigXmlFilePath);
         DigestDocument digestDoc = digestGenerator.createDigest(incidentDoc);
         // log.info("digestDoc="+digestDoc);
         newWp.setDigest(digestDoc);
@@ -1185,7 +1185,9 @@ public class IncidentManagementServiceImpl
             log.error("Unable to subscribe to own product type");
             e.printStackTrace();
         }
-        init();
+
+        //IP DISABLED - NO NEED FOR THESE NOTIFICATION MESSAGES
+        //init();
 
         // log.info("calling DigestGenerator(xsltFilePath)");
         // digestGenerator = new DigestGenerator(xsltFilePath);
@@ -1352,7 +1354,7 @@ public class IncidentManagementServiceImpl
             newWp = WorkProductHelper.setWorkProductIdentification(newWp, pkgId);
 
             // Create the digest if we have an XSLT
-            digestGenerator = new DigestGenerator(xsltFilePath, iconConfigXmlFilePath);
+            DigestGenerator digestGenerator = new DigestGenerator(xsltFilePath, iconConfigXmlFilePath);
             DigestDocument digestDoc = digestGenerator.createDigest(incidentDoc);
             // log.info("digestDoc="+digestDoc);
             newWp.setDigest(digestDoc);

@@ -7,6 +7,7 @@ import java.util.Set;
 
 import javax.persistence.*;
 
+import org.hibernate.LockMode;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 
@@ -47,16 +48,12 @@ public class Notification
     @Field(index = Index.TOKENIZED)
     private boolean endpointWS; // is the endpoint a webserviceURL
 
-    @OneToMany(cascade = {
-            CascadeType.ALL
-    }, fetch = FetchType.EAGER)
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER, mappedBy = "notification")
     @org.hibernate.annotations.Cascade(value = org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
     private Set<NotificationSubscription> subscriptions = new HashSet<NotificationSubscription>();
 
-    @OneToMany(cascade = {
-            CascadeType.ALL
-    }, fetch = FetchType.LAZY)
-    @org.hibernate.annotations.Cascade(value = org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "notification")
+    //@org.hibernate.annotations.Cascade(value = org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
     private Set<NotificationMessage> messages = new LinkedHashSet<NotificationMessage>();
 
     //FLi modified on 11/29/2011
@@ -290,21 +287,25 @@ public class Notification
     public void clearMessages() {
 
         // removes all associated notifMessages
-        Set<NotificationMessage> messageSet = new HashSet<NotificationMessage>(this.messages);
-        for (NotificationMessage message : messageSet) {
+        for (NotificationMessage message : getMessages()) {
             clearMessage(message);
         }
+        //getMessages().clear();
     }
 
     /*
      * To remove the NotificationMessage from the Set. If it's successful then removed it from
      * database.
      */
-    private synchronized void clearMessage(NotificationMessage message) {
-
-        if (messages.remove(message)) {
+    private void clearMessage(NotificationMessage message) {
+        try {
+            //NotificationMessageDAOHibernate.getInstance().lock(message, LockMode.UPGRADE);
+            //NotificationMessageDAOHibernate.getInstance().refresh(message);
             NotificationMessageDAOHibernate.getInstance().makeTransient(message);
+        } catch (EntityNotFoundException enf) {
+            LOG.warn(String.format("Message %d was already deleted: %s", message.getId(), enf.getMessage()), enf);
         }
+
     }
 
     /**
@@ -320,6 +321,7 @@ public class Notification
                 for (NotificationMessage message : messages) {
                     if (messageType.equals(message.getType())) {
                         clearMessage(message);
+                        messages.remove(message);
                         break;
 
                     }

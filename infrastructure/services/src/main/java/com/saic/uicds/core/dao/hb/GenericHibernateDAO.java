@@ -80,6 +80,10 @@ public abstract class GenericHibernateDAO<T, ID extends Serializable> implements
         return entity;
     }
 
+    public void lock(T entity, LockMode lockMode) {
+        getSession().lock(entity, lockMode);
+    }
+
     public void flush() {
         getSession().flush();
     }
@@ -93,6 +97,10 @@ public abstract class GenericHibernateDAO<T, ID extends Serializable> implements
     @Override
     public void makeTransient(T entity) {
         getSession().delete(entity);
+    }
+
+    public void refresh(T entity) {
+        getSession().refresh(entity);
     }
 
     @PersistenceContext

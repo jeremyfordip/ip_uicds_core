@@ -46,7 +46,7 @@
     </repositories>
     <dependencies>
 
-        <dependency>
+        <!--<dependency>
             <groupId>net.sourceforge.saxon</groupId>
             <artifactId>saxon</artifactId>
             <version>9.1.0.8</version>
@@ -62,7 +62,29 @@
             <artifactId>saxon</artifactId>
             <version>9.1.0.8</version>
             <classifier>dom</classifier>
+        </dependency>-->
+        <dependency>
+            <groupId>net.sf.saxon</groupId>
+            <artifactId>Saxon-HE</artifactId>
+            <version>9.5.1-5</version>
         </dependency>
+
+        <dependency>
+            <groupId>net.sf.saxon</groupId>
+            <artifactId>Saxon-HE</artifactId>
+            <version>9.5.1-5</version>
+            <classifier>xqj</classifier>
+        </dependency>
+
+
+        <dependency>
+            <groupId>net.sf.saxon</groupId>
+            <artifactId>Saxon-HE</artifactId>
+            <version>9.5.1-5</version>
+            <classifier>dom</classifier>
+        </dependency>
+
+
         <dependency>
             <groupId>org.apache.xmlbeans</groupId>
             <artifactId>xmlbeans</artifactId>

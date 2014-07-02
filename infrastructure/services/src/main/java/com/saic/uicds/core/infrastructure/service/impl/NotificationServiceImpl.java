@@ -75,7 +75,7 @@ import com.saic.uicds.core.infrastructure.util.WorkProductHelper;
 
 /**
  * The NotificationService implementation.
- * 
+ *
  * @see com.saic.uicds.core.infrastructure.model.Agreement Agreement Data Model
  * @see com.saic.uicds.core.infrastructure.model.Notification Notification Data Model
  * @see com.saic.uicds.core.infrastructure.model.NotificationMessage Notification Message Data Model
@@ -88,7 +88,7 @@ import com.saic.uicds.core.infrastructure.util.WorkProductHelper;
  * @ssdd
  */
 public class NotificationServiceImpl
-    implements NotificationService, ServiceNamespaces {
+        implements NotificationService, ServiceNamespaces {
 
     @Autowired
     private PlatformTransactionManager platformTransactionManager;
@@ -105,7 +105,7 @@ public class NotificationServiceImpl
     private CommunicationsService communicationsService;
 
     private class MessageComparator
-        implements Comparator<NotificationMessage> {
+            implements Comparator<NotificationMessage> {
 
         @Override
         public int compare(NotificationMessage msg1, NotificationMessage msg2) {
@@ -116,7 +116,7 @@ public class NotificationServiceImpl
 
     /**
      * Sets the directory service.
-     * 
+     *
      * @param directoryService the new directory service
      */
     public void setDirectoryService(DirectoryService directoryService) {
@@ -139,7 +139,7 @@ public class NotificationServiceImpl
 
     /**
      * Sets the work product service.
-     * 
+     *
      * @param workProductService the new work product service
      */
     public void setWorkProductService(WorkProductService workProductService) {
@@ -152,7 +152,7 @@ public class NotificationServiceImpl
 
     /**
      * Sets the notification dao.
-     * 
+     *
      * @param n the new notification dao
      */
     public void setNotificationDAO(NotificationDAO n) {
@@ -162,7 +162,7 @@ public class NotificationServiceImpl
 
     /**
      * Gets the notification dao.
-     * 
+     *
      * @return the notification dao
      */
     public NotificationDAO getNotificationDAO() {
@@ -175,7 +175,7 @@ public class NotificationServiceImpl
 
     /**
      * Gets the agreement dao.
-     * 
+     *
      * @return the agreement dao
      */
     public AgreementDAO getAgreementDAO() {
@@ -185,7 +185,7 @@ public class NotificationServiceImpl
 
     /**
      * Sets the agreement dao.
-     * 
+     *
      * @param agreementDAO the new agreement dao
      */
     public void setAgreementDAO(AgreementDAO agreementDAO) {
@@ -198,7 +198,7 @@ public class NotificationServiceImpl
 
     /**
      * Sets the product subscription by type dao.
-     * 
+     *
      * @param n the new product subscription by type dao
      */
     public void setProductSubscriptionByTypeDAO(ProductSubscriptionByTypeDAO n) {
@@ -208,7 +208,7 @@ public class NotificationServiceImpl
 
     /**
      * Gets the product subscription by type dao.
-     * 
+     *
      * @return the product subscription by type dao
      */
     public ProductSubscriptionByTypeDAO getProductSubscriptionByTypeDAO() {
@@ -221,7 +221,7 @@ public class NotificationServiceImpl
 
     /**
      * Sets the web service template.
-     * 
+     *
      * @param webServiceTemplate the new web service template
      */
     public void setWebServiceTemplate(WebServiceTemplate webServiceTemplate) {
@@ -234,20 +234,20 @@ public class NotificationServiceImpl
 
     /**
      * System initialized handler.
-     * 
+     *
      * @param messgae the messgae
      */
     public void systemInitializedHandler(String messgae) {
 
         WorkProductTypeListType typeList = WorkProductTypeListType.Factory.newInstance();
         directoryService.registerUICDSService(NS_NotificationService, NOTIFICATION_SERVICE_NAME,
-            typeList, typeList);
+                typeList, typeList);
         sendSunscriberInterface();
     }
 
     /**
      * Gets the matching messages for the specified entity Id.
-     * 
+     *
      * @param entityId the entity id
      * @return the matching messages
      * @ssdd
@@ -291,7 +291,7 @@ public class NotificationServiceImpl
 
     /**
      * Searches all notifications and sends any subscription messages to the subscriber interface.
-     * 
+     *
      * @ssdd
      */
     public /* synchronized */ void sendSunscriberInterface() {
@@ -305,7 +305,7 @@ public class NotificationServiceImpl
 
     /**
      * Creates the pull point.
-     * 
+     *
      * @param entityID the entity id
      * @return the endpoint reference type
      * @ssdd
@@ -319,14 +319,14 @@ public class NotificationServiceImpl
 
         // Set the url for the notification service for pull points
         endpoint.addNewAddress().setStringValue(
-            getConfigurationService().getWebServiceBaseURL() + "/" + entityID);
+                getConfigurationService().getWebServiceBaseURL() + "/" + entityID);
 
         // Add the service identification
         MetadataType metadata = endpoint.addNewMetadata();
         XmlCursor xc = metadata.newCursor();
         xc.toNextToken();
         xc.insertElementWithText("scheme",
-            getConfigurationService().getServiceNameURN(NOTIFICATION_SERVICE_NAME));
+                getConfigurationService().getServiceNameURN(NOTIFICATION_SERVICE_NAME));
         xc.dispose();
 
         // create or update notification model and persist
@@ -375,7 +375,7 @@ public class NotificationServiceImpl
 
     /**
      * Gets the pull point.
-     * 
+     *
      * @param entityID the entity id
      * @return the pull point or null if one doesn't exist for the entity id
      * @ssdd
@@ -392,7 +392,7 @@ public class NotificationServiceImpl
             XmlCursor xc = metadata.newCursor();
             xc.toNextToken();
             xc.insertElementWithText("scheme",
-                getConfigurationService().getServiceNameURN(NOTIFICATION_SERVICE_NAME));
+                    getConfigurationService().getServiceNameURN(NOTIFICATION_SERVICE_NAME));
             xc.dispose();
         } else {
             return null;
@@ -402,14 +402,14 @@ public class NotificationServiceImpl
 
     /**
      * Update endpoint.
-     * 
+     *
      * @param entityID the entity id
      * @param endpointAddress the endpoint address
      * @param isWebService the is web service
      * @ssdd
      */
     public /* synchronized */ void updateEndpoint(String entityID, String endpointAddress,
-        boolean isWebService) {
+                                                  boolean isWebService) {
 
         EndpointReferenceType endpoint = null;
         Notification notification = notificationDAO.findByEntityId(entityID);
@@ -427,7 +427,7 @@ public class NotificationServiceImpl
 
     /**
      * Gets the messages.
-     * 
+     *
      * @param entityID the entity id
      * @param num the num
      * @return the messages
@@ -445,46 +445,52 @@ public class NotificationServiceImpl
         logEntry.setAction(LogEntry.ACTION_NOTIFICATION_POLL);
         logEntry.setEntityId(entityID);
         log.info(logEntry.getLogEntry());
+        try {
+            // if there's an entry for this id (i.e. bonnera@core.1.saic.com)
+            Notification notification = notificationDAO.findByEntityId(entityID);
+            if (notification != null) {
+                // Got one!
+                // log.debug("Found " + entityID);
+                ArrayList<NotificationMessageHolderType> messages = new ArrayList<NotificationMessageHolderType>();
 
-        // if there's an entry for this id (i.e. bonnera@core.1.saic.com)
-        Notification notification = notificationDAO.findByEntityId(entityID);
-        if (notification != null) {
-            // Got one!
-            // log.debug("Found " + entityID);
-            ArrayList<NotificationMessageHolderType> messages = new ArrayList<NotificationMessageHolderType>();
+                // Get Subscriptions, iterate through, and build message per workProduct message
+                Set<NotificationMessage> notfMessages = notification.getMessages();
+                if (notfMessages.size() > 0) {
+                    if (log.isInfoEnabled()) {
+                        log.info("Have " + notfMessages.size() + " notifications for " + entityID);
+                    }
+                    List<NotificationMessage> notificationMessages = new ArrayList<NotificationMessage>();
+                    notificationMessages.addAll(notfMessages);
+                    Collections.sort(notificationMessages, new MessageComparator());
+                    for (NotificationMessage msg : notificationMessages) {
+                        // log.debug("Notification message content: " + msg.getMessage());
+                        messages.add(createNotificationMessageHolder(msg.getType(),
+                                new String(msg.getMessage())));
+                    }
 
-            // Get Subscriptions, iterate through, and build message per workProduct message
-            Set<NotificationMessage> notfMessages = notification.getMessages();
-            if (notfMessages.size() > 0) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Have " + notfMessages.size() + " notifications for " + entityID);
+                    // Removes messages from queue
+                    clearNotificationMessages(notification);
+                } else {
+                    if (log.isInfoEnabled()) {
+                        log.info("No notifications for " + entityID);
+                    }
                 }
-                List<NotificationMessage> notificationMessages = new ArrayList<NotificationMessage>();
-                notificationMessages.addAll(notfMessages);
-                Collections.sort(notificationMessages, new MessageComparator());
-                for (NotificationMessage msg : notificationMessages) {
-                    // log.debug("Notification message content: " + msg.getMessage());
-                    messages.add(createNotificationMessageHolder(msg.getType(),
-                        new String(msg.getMessage())));
-                }
+
+                response = new NotificationMessageHolderType[messages.size()];
+                response = messages.toArray(response);
+
+            } else {
+                log.error(entityID + " not found in subscription map");
             }
-
-            // Removes messages from queue
-            clearNotificationMessages(notification);
-
-            response = new NotificationMessageHolderType[messages.size()];
-            response = messages.toArray(response);
-
-        } else {
-            log.error(entityID + " not found in subscription map");
+        } catch (Exception e) {
+             log.error(String.format("Error with getMessages(%s): %s", entityID, e.getMessage()), e);
         }
-
         return response;
     }
 
     /**
      * Gets the current message.
-     * 
+     *
      * @param topic the topic
      * @return the current message
      * @ssdd
@@ -512,13 +518,13 @@ public class NotificationServiceImpl
 
     /**
      * Creates the notification message holder.
-     * 
+     *
      * @param msgType the msg type
      * @param message the message
      * @return the notification message holder type
      */
     private NotificationMessageHolderType createNotificationMessageHolder(String msgType,
-        String message) {
+                                                                          String message) {
 
         NotificationMessageHolderType t = NotificationMessageHolderType.Factory.newInstance();
         Message m = t.addNewMessage();
@@ -554,7 +560,7 @@ public class NotificationServiceImpl
                 }
             } catch (XmlException e) {
                 log.debug("createNotificationMessageHolder: Error parsing message [" + message
-                    + "]  into xml object");
+                        + "]  into xml object");
                 e.printStackTrace();
             }
 
@@ -569,7 +575,7 @@ public class NotificationServiceImpl
                 }
             } catch (XmlException e) {
                 log.debug("createNotificationMessageHolder: Error parsing message [" + message
-                    + "]  into xml object");
+                        + "]  into xml object");
                 e.printStackTrace();
             }
         }
@@ -589,7 +595,7 @@ public class NotificationServiceImpl
                 }
             } catch (XmlException e) {
                 log.debug("createNotificationMessageHolder: Error parsing message [" + message
-                    + "]  into xml object");
+                        + "]  into xml object");
                 e.printStackTrace();
             }
         }
@@ -606,7 +612,7 @@ public class NotificationServiceImpl
 
     /**
      * Invalid xpath notification.
-     * 
+     *
      * @param subscriptionId the subscription id
      * @param errorMessage the error message
      * @ssdd
@@ -621,13 +627,13 @@ public class NotificationServiceImpl
                     ProductPublicationStatus status = new ProductPublicationStatus();
                     status.setStatus(ProductPublicationStatus.FailureStatus);
                     status.setReasonForFailure("Subscription for [" + notification.getEntityID()
-                        + "]. " + errorMessage);
+                            + "]. " + errorMessage);
                     WorkProductPublicationResponseType errorResponse = WorkProductHelper.toWorkProductPublicationResponse(status);
                     WorkProductPublicationResponseDocument errorResponseDoc = WorkProductPublicationResponseDocument.Factory.newInstance();
                     errorResponseDoc.addNewWorkProductPublicationResponse().set(errorResponse);
 
                     addNotificationMessage(notification, subscriptionId, NOTIFY_MESSAGE,
-                        errorResponseDoc.toString());
+                            errorResponseDoc.toString());
                 }
             }
         }
@@ -635,7 +641,7 @@ public class NotificationServiceImpl
 
     /**
      * Gets the service name.
-     * 
+     *
      * @return the service name
      */
     @Override
@@ -648,7 +654,7 @@ public class NotificationServiceImpl
      * New work product version. Searches all notifications and updates any subscription messages
      * which have the specified subscription Id Executes every time a new version on any workproduct
      * is updated
-     * 
+     *
      * @param workProductID the work product id
      * @param subscriptionId the subscription id
      * @ssdd
@@ -656,7 +662,7 @@ public class NotificationServiceImpl
     @Override
     // @Transactional(propagation = Propagation.REQUIRES_NEW)
     public /* synchronized */ void newWorkProductVersion(final String productID,
-        final Integer subscriptionId) {
+                                                         final Integer subscriptionId) {
 
         // get the product
         final WorkProduct product = workProductService.getProduct(productID);
@@ -680,14 +686,14 @@ public class NotificationServiceImpl
 
                     for (Notification notification : notifications) {
                         log.debug("adding workproduct: " + productID + " to subid: "
-                            + subscriptionId + " to entity: " + notification.getEntityID());
+                                + subscriptionId + " to entity: " + notification.getEntityID());
 
                         productDoc.setWorkProduct(summary);
 
                         // if endpoint is web service url
                         if (notification.isEndpointWS()) {
                             log.debug("Notification going to be SENT to webServiceURL: "
-                                + notification.getEndpointURL());
+                                    + notification.getEndpointURL());
                             String url = notification.getEndpointURL();
                             try {
                                 URI u = new URI(url);
@@ -697,20 +703,20 @@ public class NotificationServiceImpl
                                     try {
                                         log.debug("XMPP message sent to: " + u.getHost());
                                         communicationsService.sendXMPPMessage(
-                                            getNotificationMessageBody(product), null,
-                                            productDoc.xmlText(), u.getSchemeSpecificPart());
+                                                getNotificationMessageBody(product), null,
+                                                productDoc.xmlText(), u.getSchemeSpecificPart());
                                     } catch (IllegalArgumentException e) {
                                         log.error("IllegalArgumentException newWorkProductVersion sending XMPP message: "
-                                            + e.getMessage());
+                                                + e.getMessage());
                                     } catch (Exception e) {
                                         log.error("Exception newWorkProductVersion IllegalArgumentException: "
-                                            + e.getMessage());
+                                                + e.getMessage());
                                     }
                                 } else {
                                     // invoke specified webService
                                     log.debug("WS-Notify message sent to :" + u.toString());
                                     invokeWebServiceTemplate(notification, "WorkProductID",
-                                        productDoc.toString());
+                                            productDoc.toString());
                                 }
                             } catch (URISyntaxException e) {
                                 log.debug("Error decoding URI: " + e.getMessage());
@@ -723,7 +729,7 @@ public class NotificationServiceImpl
                             }
 
                             notification.addMessage(subscriptionId, productID,
-                                productDoc.toString());
+                                    productDoc.toString());
                         }
                     }
                 }
@@ -732,7 +738,7 @@ public class NotificationServiceImpl
             // System.err.println("productChangeNotificationHandler calling publishWorkProduct Exception sending message: "
             // + e.getMessage());
             log.error("Exception handling product change notification message when publishing: "
-                + e.getMessage());
+                    + e.getMessage());
         }
 
         /*
@@ -824,7 +830,7 @@ public class NotificationServiceImpl
 
     /**
      * Invoke web service template.
-     * 
+     *
      * @param notification the notification
      * @param msgType the msg type
      * @param message the message
@@ -838,7 +844,7 @@ public class NotificationServiceImpl
         NotifyRequestDocument request = NotifyRequestDocument.Factory.newInstance();
 
         request.addNewNotifyRequest().addNewNotificationMessage().setMessage(
-            createNotificationMessageHolder(msgType, message).getMessage());
+                createNotificationMessageHolder(msgType, message).getMessage());
 
         XmlCursor xc = request.getNotifyRequest().newCursor();
         xc.toNextToken();
@@ -853,7 +859,7 @@ public class NotificationServiceImpl
 
     /**
      * Adds notification messages for the specified entity Id
-     * 
+     *
      * @param entityID the entity id
      * @param notifications the notifications
      * @ssdd
@@ -879,20 +885,20 @@ public class NotificationServiceImpl
 
     /**
      * Subscribes to messages of the specified topic type on the specified endpoint
-     * 
+     *
      * @param who the endpoint reference
      * @param what the filter type
      * @ssdd
      */
     @Override
     public void subscribe(EndpointReferenceType who, FilterType what)
-        throws InvalidProductTypeException, NullSubscriberException, EmptySubscriberNameException,
-        InvalidProductIDException {
+            throws InvalidProductTypeException, NullSubscriberException, EmptySubscriberNameException,
+            InvalidProductIDException {
 
         if (who.getAddress() != null) {
 
             String entityID = who.getAddress().getStringValue().substring(
-                who.getAddress().getStringValue().lastIndexOf("/") + 1);
+                    who.getAddress().getStringValue().lastIndexOf("/") + 1);
             log.debug("subscribing who: " + entityID);
 
             // Process topic subscriptions - Allow TopicExpression elements from either
@@ -957,11 +963,11 @@ public class NotificationServiceImpl
                     if (productTypeValue.equals("*")) {
                         log.debug("Subscribing to ALL Incident updates.");
                         subscribeIncidentIdAndWorkProductType(productType, productTypeValue, xPath,
-                            namespaceMap, entityID);
+                                namespaceMap, entityID);
                     } else {
                         log.debug("Subscribing to IncidentID: " + productTypeValue);
                         subscribeIncidentIdAndWorkProductType(productType, productTypeValue, xPath,
-                            namespaceMap, entityID);
+                                namespaceMap, entityID);
                     }
                 }
                 // WorkProductType TopicExpression (all others)
@@ -975,9 +981,9 @@ public class NotificationServiceImpl
                             incidentIdQualifier = "*";
                         }
                         log.debug("Subscribing to ProductType : " + productType
-                            + " associated with IncidentID : " + incidentIdQualifier);
+                                + " associated with IncidentID : " + incidentIdQualifier);
                         subscribeIncidentIdAndWorkProductType(productType, incidentIdQualifier,
-                            xPath, namespaceMap, entityID);
+                                xPath, namespaceMap, entityID);
                     }
                     // All other productTypes in from <productType>/*
                     else if (productTypeValue.equals("*")) {
@@ -998,7 +1004,7 @@ public class NotificationServiceImpl
 
     /**
      * Subscribes to notifications for the specified work product id.
-     * 
+     *
      * @param workProductID the work product id
      * @param entityID the entity id
      * @return the integer
@@ -1009,7 +1015,7 @@ public class NotificationServiceImpl
      */
     @Override
     public /* synchronized */ Integer subscribeWorkProductID(String workProductID, String entityID)
-        throws InvalidProductIDException, NullSubscriberException, EmptySubscriberNameException {
+            throws InvalidProductIDException, NullSubscriberException, EmptySubscriberNameException {
 
         // Sub with PubSub
         Integer subscriptionID = getPubSubService().subscribeWorkProductID(workProductID, this);
@@ -1030,7 +1036,7 @@ public class NotificationServiceImpl
 
     /**
      * Subscribe to notifications for the specified work product type.
-     * 
+     *
      * @param wpType the wp type
      * @param xpContext the xp context
      * @param namespaceMap the namespace map
@@ -1043,11 +1049,11 @@ public class NotificationServiceImpl
      */
     @Override
     public /* synchronized */ Integer subscribeWorkProductType(String wpType, String xpContext,
-        Map<String, String> namespaceMap, String entityID) throws InvalidProductTypeException,
-        NullSubscriberException, EmptySubscriberNameException {
+                                                               Map<String, String> namespaceMap, String entityID) throws InvalidProductTypeException,
+            NullSubscriberException, EmptySubscriberNameException {
 
         Integer subID = getPubSubService().subscribeWorkProductType(wpType, xpContext,
-            namespaceMap, this);
+                namespaceMap, this);
 
         // create/update notification and persist
         Notification notification = notificationDAO.findByEntityId(entityID);
@@ -1065,7 +1071,7 @@ public class NotificationServiceImpl
 
     /**
      * Subscribes to notifications for the specified incident id and work product type.
-     * 
+     *
      * @param wpType the wp type
      * @param incidentID the incident id
      * @param xpContext the xp context
@@ -1078,11 +1084,11 @@ public class NotificationServiceImpl
      * @ssdd
      */
     public /* synchronized */ Integer subscribeIncidentIdAndWorkProductType(String wpType,
-        String incidentID, String xpContext, Map<String, String> namespaceMap, String entityID)
-        throws InvalidProductTypeException, NullSubscriberException, EmptySubscriberNameException {
+                                                                            String incidentID, String xpContext, Map<String, String> namespaceMap, String entityID)
+            throws InvalidProductTypeException, NullSubscriberException, EmptySubscriberNameException {
 
         Integer subID = getPubSubService().subscribeInterestGroupIdAndWorkProductType(wpType,
-            incidentID, xpContext, namespaceMap, this);
+                incidentID, xpContext, namespaceMap, this);
 
         // create/update notification and persist
         Notification notification = notificationDAO.findByEntityId(entityID);
@@ -1100,7 +1106,7 @@ public class NotificationServiceImpl
 
     /**
      * Subscribes to profile notifications.
-     * 
+     *
      * @param profileID the profile id
      * @param entityID the entity id
      * @throws InvalidProductIDException the invalid product id exception
@@ -1110,7 +1116,7 @@ public class NotificationServiceImpl
      */
     @Override
     public /* synchronized */ void subscribeProfile(String profileID, String entityID)
-        throws InvalidProductIDException, NullSubscriberException, EmptySubscriberNameException {
+            throws InvalidProductIDException, NullSubscriberException, EmptySubscriberNameException {
 
         // create/update notification and persist
         Notification notification = notificationDAO.findByEntityId(entityID);
@@ -1129,22 +1135,22 @@ public class NotificationServiceImpl
         final String eeID = entityID;
         final Integer sID = subscriptionID;
         getPubSubService().addProfileListener(profileID,
-            new NotificationListener<ProfileNotificationMessage>() {
-                public void onChange(ProfileNotificationMessage message) {
+                new NotificationListener<ProfileNotificationMessage>() {
+                    public void onChange(ProfileNotificationMessage message) {
 
-                    Notification notification = notificationDAO.findByEntityId(eeID);
-                    if (notification != null) {
-                        addNotificationMessage(notification, sID, ProfileNotificationMessage.NAME,
-                            message.toString());
+                        Notification notification = notificationDAO.findByEntityId(eeID);
+                        if (notification != null) {
+                            addNotificationMessage(notification, sID, ProfileNotificationMessage.NAME,
+                                    message.toString());
+                        }
+
                     }
-
-                }
-            });
+                });
     }
 
     /**
      * Subscribes to agreements.
-     * 
+     *
      * @param agreementID the agreement id
      * @param entityID the entity id
      * @throws InvalidProductIDException the invalid product id exception
@@ -1154,7 +1160,7 @@ public class NotificationServiceImpl
      */
     @Override
     public /* synchronized */ void subscribeAgreement(String agreementID, String entityID)
-        throws InvalidProductIDException, NullSubscriberException, EmptySubscriberNameException {
+            throws InvalidProductIDException, NullSubscriberException, EmptySubscriberNameException {
 
         // create/update notification and persist
         Notification notification = notificationDAO.findByEntityId(entityID);
@@ -1173,21 +1179,21 @@ public class NotificationServiceImpl
         final String eeID = entityID;
         final Integer sID = subscriptionID;
         getPubSubService().addAgreementListener(agreementID,
-            new NotificationListener<AgreementRosterMessage>() {
-                public void onChange(AgreementRosterMessage message) {
+                new NotificationListener<AgreementRosterMessage>() {
+                    public void onChange(AgreementRosterMessage message) {
 
-                    Notification notification = notificationDAO.findByEntityId(eeID);
+                        Notification notification = notificationDAO.findByEntityId(eeID);
 
-                    addNotificationMessage(notification, sID, AgreementRosterMessage.NAME,
-                        message.getAgreementID());
-                }
-            });
+                        addNotificationMessage(notification, sID, AgreementRosterMessage.NAME,
+                                message.getAgreementID());
+                    }
+                });
 
     }
 
     /**
      * Gets the configuration service.
-     * 
+     *
      * @return the configuration service
      */
     @Override
@@ -1198,7 +1204,7 @@ public class NotificationServiceImpl
 
     /**
      * Sets the configuration service.
-     * 
+     *
      * @param service the new configuration service
      */
     @Override
@@ -1209,7 +1215,7 @@ public class NotificationServiceImpl
 
     /**
      * Gets the pub sub service.
-     * 
+     *
      * @return the pub sub service
      */
     @Override
@@ -1220,7 +1226,7 @@ public class NotificationServiceImpl
 
     /**
      * Sets the pub sub service.
-     * 
+     *
      * @param service the new pub sub service
      */
     @Override
@@ -1231,7 +1237,7 @@ public class NotificationServiceImpl
 
     /**
      * Notifies of a work product deletion.
-     * 
+     *
      * @param workProductID the work product id
      * @param workProductType the work product type
      * @param subscriptionId the subscription id
@@ -1239,7 +1245,7 @@ public class NotificationServiceImpl
      */
     @Override
     public /* synchronized */ void workProductDeleted(
-        ProductChangeNotificationMessage productChangedMessage, Integer subscriptionId) {
+            ProductChangeNotificationMessage productChangedMessage, Integer subscriptionId) {
 
         // search all notifications and update any subscription msgs which have specified ID
         List<Notification> notifications = notificationDAO.findBySubscriptionId(subscriptionId);
@@ -1247,21 +1253,21 @@ public class NotificationServiceImpl
             WorkProductDeletedNotificationDocument doc = WorkProductDeletedNotificationDocument.Factory.newInstance();
             doc.addNewWorkProductDeletedNotification();
             doc.getWorkProductDeletedNotification().addNewWorkProductIdentification().set(
-                productChangedMessage.getIdentification().getWorkProductIdentification());
+                    productChangedMessage.getIdentification().getWorkProductIdentification());
             doc.getWorkProductDeletedNotification().addNewWorkProductProperties().set(
-                productChangedMessage.getProperties().getWorkProductProperties());
+                    productChangedMessage.getProperties().getWorkProductProperties());
 
             // if endpoint is web service url
             if (notification.isEndpointWS()) {
                 log.debug("Notification going to be SENT to webServiceURL: "
-                    + notification.getEndpointURL());
+                        + notification.getEndpointURL());
                 // invoke specified webService
                 invokeWebServiceTemplate(notification, "WorkProductDeleted", doc.toString());
             }
             // if endpoint is pullpoint address
             else {
                 addNotificationMessage(notification, subscriptionId, "WorkProductDeleted",
-                    doc.toString());
+                        doc.toString());
             }
 
         }
@@ -1304,7 +1310,7 @@ public class NotificationServiceImpl
 
     /**
      * Clear notification messages.
-     * 
+     *
      * @ssdd
      */
 
@@ -1312,13 +1318,13 @@ public class NotificationServiceImpl
     private /* synchronized */ void clearNotificationMessages(Notification notification) {
 
         notification.clearMessages();
-        notificationDAO.makePersistent(notification);
+        //notificationDAO.makePersistent(notification);
 
     }
 
     /**
      * Add a notification message.
-     * 
+     *
      * @param subscriptionID the subscription id
      * @param msgType the msg type
      * @param message the message
@@ -1327,22 +1333,22 @@ public class NotificationServiceImpl
 
     // @Transactional
     private /* synchronized */ void addNotificationMessage(Notification notification,
-        Integer subscriptionID, String msgType, String message) {
+                                                           Integer subscriptionID, String msgType, String message) {
 
         notification.addMessage(subscriptionID, msgType, message);
-        notificationDAO.makePersistent(notification);
+        //notificationDAO.makePersistent(notification);
 
     }
 
     /**
      * Adds the subscription.
-     * 
+     *
      * @param subscription the subscription
      * @ssdd
      */
     // @Transactional
     private /* synchronized */ void addNotificationSubscription(Notification notification,
-        NotificationSubscription subscription) {
+                                                                NotificationSubscription subscription) {
 
         notification.addSubscription(subscription);
         notificationDAO.makePersistent(notification);

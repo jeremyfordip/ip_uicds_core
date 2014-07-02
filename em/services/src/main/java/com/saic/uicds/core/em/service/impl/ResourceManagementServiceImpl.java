@@ -112,7 +112,7 @@ public class ResourceManagementServiceImpl
     
     private String iconConfigXmlFilePath;
     
-    private DigestGenerator digestGenerator;
+    //private DigestGenerator digestGenerator;
 
     @PostConstruct
     public void init() {
@@ -259,7 +259,7 @@ public class ResourceManagementServiceImpl
         //if (xsltFilePath == null) 
         xsltFilePath="xslt/RequestResourceDigest.xsl";
         if (iconConfigXmlFilePath == null) iconConfigXmlFilePath="xml/types_icons.xml";
-        digestGenerator = new DigestGenerator(xsltFilePath, iconConfigXmlFilePath);
+        DigestGenerator digestGenerator = new DigestGenerator(xsltFilePath, iconConfigXmlFilePath);
         DigestDocument digestDoc = digestGenerator.createDigest(request);
         workProduct.setDigest(digestDoc);
         
@@ -301,7 +301,7 @@ public class ResourceManagementServiceImpl
         //if (xsltFilePath == null) 
         xsltFilePath="xslt/CommitResourceDigest.xsl";
         if (iconConfigXmlFilePath == null) iconConfigXmlFilePath="xml/types_icons.xml";
-        digestGenerator = new DigestGenerator(xsltFilePath, iconConfigXmlFilePath);
+        DigestGenerator digestGenerator = new DigestGenerator(xsltFilePath, iconConfigXmlFilePath);
         DigestDocument digestDoc = digestGenerator.createDigest(commit);
         //System.out.println("CommitResourceDigest="+digestDoc);
         workProduct.setDigest(digestDoc);

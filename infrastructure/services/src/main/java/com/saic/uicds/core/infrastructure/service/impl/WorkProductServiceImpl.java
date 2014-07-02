@@ -35,10 +35,12 @@ import com.saic.uicds.core.infrastructure.util.ServletUtil;
 import com.saic.uicds.core.infrastructure.util.UUIDUtil;
 import com.saic.uicds.core.infrastructure.util.WorkProductHelper;
 import com.saic.uicds.core.infrastructure.util.WorkProductUtil;
+import org.springframework.transaction.support.TransactionSynchronizationAdapter;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 /**
  * The WorkProductService implementation. WorkProducts are maintained in a hibernate model.
- * 
+ *
  * @see com.saic.uicds.core.infrastructure.model.WorkProduct WorkProduct Data Model
  * @ssdd
  */
@@ -46,7 +48,7 @@ import com.saic.uicds.core.infrastructure.util.WorkProductUtil;
 
 @Transactional
 public class WorkProductServiceImpl
-    implements WorkProductService {
+        implements WorkProductService {
 
     private final static Logger log = LoggerFactory.getLogger(WorkProductServiceImpl.class);
 
@@ -65,9 +67,9 @@ public class WorkProductServiceImpl
     /**
      * Delete and Archive a work product. The work product must be associated with an interest group
      * owned by the local core. The work product must be already closed .
-     * 
+     *
      * @param identifier the identifier
-     * 
+     *
      * @return the product publication status
      * @ssdd
      */
@@ -75,7 +77,7 @@ public class WorkProductServiceImpl
     public ProductPublicationStatus archiveProduct(IdentificationType identifier) {
 
         if (identifier.getIdentifier() == null
-            || identifier.getIdentifier().getStringValue() == null) {
+                || identifier.getIdentifier().getStringValue() == null) {
             return new ProductPublicationStatus("No product Identifier to be archived");
         }
 
@@ -101,7 +103,7 @@ public class WorkProductServiceImpl
             // not the owner
             if (isOwner == false) {
                 return new ProductPublicationStatus(getDirectoryService().getCoreName()
-                    + " is not owner: Cannot archive product: " + productID);
+                        + " is not owner: Cannot archive product: " + productID);
             }
         }
 
@@ -117,10 +119,10 @@ public class WorkProductServiceImpl
 
     /**
      * Associate work product to interest group.
-     * 
+     *
      * @param workProductID the work product id
      * @param interestGroupID the interest group id
-     * 
+     *
      * @return the string
      * @ssdd
      */
@@ -135,11 +137,11 @@ public class WorkProductServiceImpl
 
         // verify that the association doesn't already exist
         if ((interestGroupID != null)
-            && (wp.getAssociatedInterestGroupIDs().contains(interestGroupID) == false)) {
+                && (wp.getAssociatedInterestGroupIDs().contains(interestGroupID) == false)) {
             newWP.getAssociatedInterestGroupIDs().add(interestGroupID);
             publishProduct(newWP);
             notifyOfWorkProductInterestGroupAssociation(newWP, interestGroupID,
-                ProductToInterestGroupAssociationMessage.AssociationType.Associate);
+                    ProductToInterestGroupAssociationMessage.AssociationType.Associate);
         }
         return newWP.getProductID();
     }
@@ -147,9 +149,9 @@ public class WorkProductServiceImpl
     /**
      * Close product publishes a new version of the product that is marked inactive. The interest
      * group must be owned by the local core.
-     * 
+     *
      * @param productID the product id
-     * 
+     *
      * @return the product publication status
      * @ssdd
      */
@@ -169,22 +171,22 @@ public class WorkProductServiceImpl
         // InterestGroupManagementComponent
         Set<String> igIDSet = product.getAssociatedInterestGroupIDs();
         boolean isOwner = false;
-        
+
         if(igIDSet !=null) //fli added to verify it 10/13/2011
         {
-	        if (igIDSet.size() > 0) {
-	            for (String igID : igIDSet) {
-	                if (interestGroupManagementComponent.interestGroupOwnedByCore(igID) == true) {
-	                    isOwner = true;
-	                    break;
-	                }
-	            }
-	            // not the owner
-	            if (isOwner == false) {
-	                return new ProductPublicationStatus(getDirectoryService().getCoreName()
-	                    + " is not owner: Cannot close product: " + productID);
-	            }
-	        }
+            if (igIDSet.size() > 0) {
+                for (String igID : igIDSet) {
+                    if (interestGroupManagementComponent.interestGroupOwnedByCore(igID) == true) {
+                        isOwner = true;
+                        break;
+                    }
+                }
+                // not the owner
+                if (isOwner == false) {
+                    return new ProductPublicationStatus(getDirectoryService().getCoreName()
+                            + " is not owner: Cannot close product: " + productID);
+                }
+            }
         }
 
         // if it's no IG associated, marked it as inactive and returned
@@ -195,12 +197,12 @@ public class WorkProductServiceImpl
 
     /**
      * The method will not generate a new version of the work product
-     * 
+     *
      * @param productId
      * @param act
      * @return private ProductPublicationStatus deleteIt(String productId, String act) {
      *         ProductPublicationStatus status = new ProductPublicationStatus();
-     * 
+     *
      *         try { WorkProduct product = getWorkProductDAO().findByProductID(productId);
      *         getWorkProductDAO().makeTransient(product);
      *         status.setStatus(ProductPublicationStatus.SuccessStatus); status.setProduct(product);
@@ -214,7 +216,7 @@ public class WorkProductServiceImpl
         try {
 
             List<WorkProduct> productList = getWorkProductDAO().findAllClosedVersionOfProduct(
-                productID);
+                    productID);
             if (productList == null || productList.size() == 0) {
                 return new ProductPublicationStatus(productID + " has NOT been closed yet");
             }
@@ -232,7 +234,7 @@ public class WorkProductServiceImpl
             for (WorkProduct product : productList) {
 
                 log.debug("DELETE: Product:/" + product.getProductID() + "/, Version:/"
-                    + product.getProductVersion() + "/ ...");
+                        + product.getProductVersion() + "/ ...");
 
                 // only save the latest/deleted version
                 if (version == product.getProductVersion().intValue()) {
@@ -244,7 +246,7 @@ public class WorkProductServiceImpl
                 if (needNotify && interestGroupID != null) {
                     // need to un-associate the product with the interest group
                     notifyOfWorkProductInterestGroupAssociation(product, interestGroupID,
-                        ProductToInterestGroupAssociationMessage.AssociationType.Unassociate);
+                            ProductToInterestGroupAssociationMessage.AssociationType.Unassociate);
                 }
                 // WorkProductSerializer.getInstance().addProduct(product);
                 getWorkProductDAO().makeTransient(product);
@@ -253,7 +255,7 @@ public class WorkProductServiceImpl
             productList = getWorkProductDAO().findAllVersionOfProduct(productID);
             for (WorkProduct product : productList) {
                 log.debug("DELETE: Product:/" + product.getProductID() + "/, Version:/"
-                    + product.getProductVersion() + "/ ...");
+                        + product.getProductVersion() + "/ ...");
                 // WorkProductSerializer.getInstance().addProduct(product);
                 getWorkProductDAO().makeTransient(product);
             }
@@ -262,10 +264,10 @@ public class WorkProductServiceImpl
             if (identification.isNil() == false && properties.isNil() == false) {
                 log.debug("deleteIt: sending DELETE message for product ID=" + productID);
                 notifyOfWorkProductChange(identification, properties,
-                    ProductChangeNotificationMessage.ChangeIndicator.Delete);
+                        ProductChangeNotificationMessage.ChangeIndicator.Delete);
             } else {
                 log.error("deleteIt: cannot obtain product type from the closed product ID="
-                    + productID + " DELETE message not sent!");
+                        + productID + " DELETE message not sent!");
             }
 
             status.setStatus(ProductPublicationStatus.SuccessStatus);
@@ -282,9 +284,9 @@ public class WorkProductServiceImpl
      * Queries the DAO to get all versions, including closed versions, of the workproduct and marks
      * them as transient. By default, workproducts are de-associated from interest groups with which
      * they are associated.
-     * 
+     *
      * @param productID the product id
-     * 
+     *
      * @return the product publication status
      * @ssdd
      */
@@ -296,9 +298,9 @@ public class WorkProductServiceImpl
 
     /**
      * Delete work product, but does de-associate workproducts from associated interest groups.
-     * 
+     *
      * @param productID the product id
-     * 
+     *
      * @return the product publication status
      * @ssdd
      */
@@ -312,36 +314,49 @@ public class WorkProductServiceImpl
 
         WorkProduct product = null;
 
-        WorkProductIdentificationDocument identification = null;
-        WorkProductPropertiesDocument properties = null;
+        final WorkProductIdentificationDocument identification= WorkProductIdentificationDocument.Factory.newInstance();
+        final WorkProductPropertiesDocument properties = WorkProductPropertiesDocument.Factory.newInstance();
         try {
             log.debug(">>>> doPublish:  about to publish: " + theProduct.getProductID() + ", "
-                + theProduct.getProductType() + ", " + theProduct.getMimeType() + ", @ "
-                + theProduct.getUpdatedDate() + " version=" + theProduct.getProductVersion());
+                    + theProduct.getProductType() + ", " + theProduct.getMimeType() + ", @ "
+                    + theProduct.getUpdatedDate() + " version=" + theProduct.getProductVersion());
 
             // log.debug("doPublish: buffer=[" + new String(theProduct.getProduct()));
 
             product = getWorkProductDAO().makePersistent(theProduct);
 
-            identification = WorkProductIdentificationDocument.Factory.newInstance();
             identification.addNewWorkProductIdentification().set(
-                WorkProductHelper.getWorkProductIdentification(product));
+                    WorkProductHelper.getWorkProductIdentification(product));
 
-            properties = WorkProductPropertiesDocument.Factory.newInstance();
             properties.addNewWorkProductProperties().set(
-                WorkProductHelper.getWorkProductProperties(product));
+                    WorkProductHelper.getWorkProductProperties(product));
 
             log.debug("======> published product: version="
-                + product.getProductVersion().toString() + " updatedBy=" + product.getUpdatedBy()
-                + " updatedDate=" + product.getUpdatedDate());
+                    + product.getProductVersion().toString() + " updatedBy=" + product.getUpdatedBy()
+                    + " updatedDate=" + product.getUpdatedDate());
         } catch (Exception e) {
-        	log.error("doPublish. Error="+e.getMessage());
+            log.error("doPublish. Error="+e.getMessage());
             e.printStackTrace();
         }
 
         if (product != null && doNotifications) {
-            notifyOfWorkProductChange(identification, properties,
-                ProductChangeNotificationMessage.ChangeIndicator.Publish);
+            //this is to counter the issue where Notifications were being committed before the WorkProduct was.
+            TransactionSynchronizationManager.registerSynchronization(
+                    new TransactionSynchronizationAdapter() {
+                        @Override
+                        public void afterCommit() {
+                            log.debug("WORK PRODUCT TRANSACTION COMPLETE: Performing Notifications.");
+                            try {
+                                notifyOfWorkProductChange(identification, properties,
+                                        ProductChangeNotificationMessage.ChangeIndicator.Publish);
+                            } catch (Exception e) {
+                                log.error("Could not Send Notifications : " + e.getMessage(), e);
+                                throw new RuntimeException("Could not Send Notifications : " + e.getMessage(), e);
+                            }
+                        }
+                    }
+            );
+
         }
 
         return product;
@@ -349,10 +364,10 @@ public class WorkProductServiceImpl
 
     /**
      * Find by interest group and type.
-     * 
+     *
      * @param interestGroupID the interest group id
      * @param productType the product type
-     * 
+     *
      * @return the list< work product>
      * @ssdd
      */
@@ -368,9 +383,9 @@ public class WorkProductServiceImpl
 
     /**
      * Gets the list of work products associated with and interest group.
-     * 
+     *
      * @param interestGroupId the interest group id
-     * 
+     *
      * @return the associated work product list
      * @ssdd
      */
@@ -409,9 +424,9 @@ public class WorkProductServiceImpl
 
     /**
      * Gets the product using the IdentificationType package id
-     * 
+     *
      * @param pkgId the package id that identifies the work product
-     * 
+     *
      * @return the product
      * @ssdd
      */
@@ -427,9 +442,9 @@ public class WorkProductServiceImpl
 
     /**
      * Gets the product using the work product id string
-     * 
+     *
      * @param id the id
-     * 
+     *
      * @return the product
      * @ssdd
      */
@@ -453,7 +468,7 @@ public class WorkProductServiceImpl
 
     /**
      * Gets the product association channel.
-     * 
+     *
      * @return the product association channel
      */
     public MessageChannel getProductAssociationChannel() {
@@ -463,25 +478,25 @@ public class WorkProductServiceImpl
 
     /**
      * Gets the product by type and x query.
-     * 
+     *
      * @param productType the product type
      * @param query the query
      * @param namespaceMap the namespace map
-     * 
+     *
      * @return the product by type and x query
      * @ssdd
      */
     @Override
     public List<WorkProduct> getProductByTypeAndXQuery(String productType, String query,
-        Map<String, String> namespaceMap) throws InvalidXpathException {
+                                                       Map<String, String> namespaceMap) throws InvalidXpathException {
 
         List<WorkProduct> listOfProducts = new ArrayList<WorkProduct>();
         List<WorkProduct> products = getWorkProductDAO().findByProductType(productType);
         if (products != null && products.size() > 0) {
             for (WorkProduct product : products) {
                 if (query == null || query.length() == 0 || namespaceMap == null
-                    || namespaceMap.size() == 0
-                    || DocumentUtil.exist(query, product.getProduct(), namespaceMap)) {
+                        || namespaceMap.size() == 0
+                        || DocumentUtil.exist(query, product.getProduct(), namespaceMap)) {
                     listOfProducts.add(product);
                 }
             }
@@ -491,10 +506,10 @@ public class WorkProductServiceImpl
 
     /**
      * Gets the product by identifier and version.
-     * 
+     *
      * @param id the id
      * @param productVersion the product version
-     * 
+     *
      * @return the producti by version
      * @ssdd
      */
@@ -509,9 +524,9 @@ public class WorkProductServiceImpl
 
     /**
      * Gets the product identification using the string id.
-     * 
+     *
      * @param id the id
-     * 
+     *
      * @return the product identification
      * @ssdd
      */
@@ -530,19 +545,19 @@ public class WorkProductServiceImpl
 
     /**
      * Gets the product id list by type and x query.
-     * 
+     *
      * @param productType the product type
      * @param query the query
      * @param namespaceMap the namespace map
-     * 
+     *
      * @return the product id list by type and x query
-     * 
+     *
      * @throws InvalidXpathException the invalid xpath exception
      * @ssdd
      */
     @Override
     public List<String> getProductIDListByTypeAndXQuery(String productType, String query,
-        Map<String, String> namespaceMap) throws InvalidXpathException {
+                                                        Map<String, String> namespaceMap) throws InvalidXpathException {
 
         ArrayList<String> productIDs = new ArrayList<String>();
         List<WorkProduct> products = getWorkProductDAO().findByProductType(productType);
@@ -550,8 +565,8 @@ public class WorkProductServiceImpl
             for (WorkProduct product : products) {
                 try {
                     if (query == null || query.length() == 0 || namespaceMap == null
-                        || namespaceMap.size() == 0
-                        || DocumentUtil.exist(query, product.getProduct(), namespaceMap)) {
+                            || namespaceMap.size() == 0
+                            || DocumentUtil.exist(query, product.getProduct(), namespaceMap)) {
                         productIDs.add(product.getProductID());
                     }
                 } catch (InvalidXpathException e) {
@@ -565,7 +580,7 @@ public class WorkProductServiceImpl
 
     /**
      * Gets the service name.
-     * 
+     *
      * @return the service name
      * @ssdd
      */
@@ -596,9 +611,9 @@ public class WorkProductServiceImpl
 
     /**
      * Determines if the workproduct id is in among the closed work products
-     * 
+     *
      * @param productID the product id
-     * 
+     *
      * @return true, if is deleted
      * @ssdd
      */
@@ -611,9 +626,9 @@ public class WorkProductServiceImpl
 
     /**
      * Looks up a work product by workproduct id string
-     * 
+     *
      * @param productID the product id
-     * 
+     *
      * @return true, if is existed
      * @ssdd
      */
@@ -626,7 +641,7 @@ public class WorkProductServiceImpl
 
     /**
      * List all work products.
-     * 
+     *
      * @return the list< work product>
      * @ssdd
      */
@@ -644,9 +659,9 @@ public class WorkProductServiceImpl
 
     /**
      * List work products for a given product type.
-     * 
+     *
      * @param type the type
-     * 
+     *
      * @return the list< work product>
      * @ssdd
      */
@@ -657,32 +672,32 @@ public class WorkProductServiceImpl
     }
 
     private void notifyOfWorkProductChange(WorkProductIdentificationDocument identification,
-        WorkProductPropertiesDocument properties,
-        ProductChangeNotificationMessage.ChangeIndicator changeIndicaor) {
+                                           WorkProductPropertiesDocument properties,
+                                           ProductChangeNotificationMessage.ChangeIndicator changeIndicaor) {
 
         ProductChangeNotificationMessage notification = new ProductChangeNotificationMessage(
-            identification, properties, changeIndicaor);
+                identification, properties, changeIndicaor);
 
         log.debug("Work product change notification: " + notification.getProductID());
 
         Message<ProductChangeNotificationMessage> message = new GenericMessage<ProductChangeNotificationMessage>(
-            notification);
+                notification);
         try {
             productChangeNotificationChannel.send(message);
         } catch (Exception e) {
             // System.err.println("notifyOfWorkProductChange Exception sending message: "
             // + e.getMessage());
             log.error("Exception sending message on productChangeNotificationChannel: "
-                + e.getMessage());
+                    + e.getMessage());
         }
     }
 
     private void notifyOfWorkProductInterestGroupAssociation(WorkProduct product,
-        String interestGroupID,
-        ProductToInterestGroupAssociationMessage.AssociationType associationType) {
+                                                             String interestGroupID,
+                                                             ProductToInterestGroupAssociationMessage.AssociationType associationType) {
 
         log.debug("Notify Communication Service to "
-            + (associationType == ProductToInterestGroupAssociationMessage.AssociationType.Associate
+                + (associationType == ProductToInterestGroupAssociationMessage.AssociationType.Associate
                 ? "associate"
                 : "de-associate") + " work product to incident");
 
@@ -697,15 +712,15 @@ public class WorkProductServiceImpl
         if (igInfo == null) {
             // this should not have happened since we already made this check
             log.error(product.getProductID() + " is associated to an unkown interest group ID  "
-                + interestGroupID + " no association sent");
+                    + interestGroupID + " no association sent");
             return;
         }
 
         // if it's shared work product not need to notify the communication service
         if (igInfo.getOwningCore().equals(getConfigurationService().getCoreName()) == false) {
             log.error(product.getProductID() + " is owned by " + igInfo.getOwningCore()
-                + " and this core is " + getConfigurationService().getCoreName()
-                + ". No notification needed");
+                    + " and this core is " + getConfigurationService().getCoreName()
+                    + ". No notification needed");
             return;
         }
 
@@ -717,7 +732,7 @@ public class WorkProductServiceImpl
         notification.setOwningCore(igInfo.getOwningCore());
 
         Message<ProductToInterestGroupAssociationMessage> message = new GenericMessage<ProductToInterestGroupAssociationMessage>(
-            notification);
+                notification);
         log.debug("sending AssociateProductToIncidentMessage");
         getProductAssociationChannel().send(message);
     }
@@ -730,7 +745,7 @@ public class WorkProductServiceImpl
         LogEntry logEntry = new LogEntry();
 
         log.debug("publishIt:  productType=" + theProduct.getProductType() + " productID="
-            + theProduct.getProductID() + " version=" + theProduct.getProductVersion());
+                + theProduct.getProductID() + " version=" + theProduct.getProductVersion());
 
         ProductPublicationStatus status = new ProductPublicationStatus();
 
@@ -738,7 +753,7 @@ public class WorkProductServiceImpl
             log.debug("theProduct.getProductID() is " + theProduct.getProductID());
             product = getProduct(theProduct.getProductID());
             if (product != null && product.getId() != null) {
-            	theProduct.setId(product.getId());
+                theProduct.setId(product.getId());
             }
         } else {
             log.debug("theProduct.getProductID() is null or empty");
@@ -746,22 +761,22 @@ public class WorkProductServiceImpl
 
         if (product != null) {
             log.debug("product from DB: " + product.getProductType() + ", " + product.getMimeType()
-                + ", @ " + product.getUpdatedDate() + " version=" + product.getProductVersion());
+                    + ", @ " + product.getUpdatedDate() + " version=" + product.getProductVersion());
 
             // this is an update, verify that this is valid request, i.e. version number and
             // checksum match those in the current copy in the database
             log.debug("product from DB: " + product.getProductType() + ", " + product.getMimeType()
-                + ", @ " + product.getUpdatedDate() + " version=" + product.getProductVersion());
+                    + ", @ " + product.getUpdatedDate() + " version=" + product.getProductVersion());
 
             // make sure the update is based on the current version of the work product-
             if ((!theProduct.getProductVersion().equals(product.getProductVersion()))
-                || (!theProduct.getChecksum().equals(product.getChecksum()))) {
+                    || (!theProduct.getChecksum().equals(product.getChecksum()))) {
 
                 status.setStatus("Failure");
                 String reason = "Invalid version number and/or checksum: "
-                    + " specified version number=" + theProduct.getProductVersion()
-                    + "; specified checksum=[" + theProduct.getChecksum() + "]."
-                    + "  The current version number=" + product.getProductVersion();
+                        + " specified version number=" + theProduct.getProductVersion()
+                        + "; specified checksum=[" + theProduct.getChecksum() + "]."
+                        + "  The current version number=" + product.getProductVersion();
                 status.setReasonForFailure(reason);
                 return status;
             }
@@ -771,15 +786,15 @@ public class WorkProductServiceImpl
             InterestGroupInfo igInfo = interestGroupManagementComponent.getInterestGroup(theProduct.getFirstAssociatedInterestGroupID());
             if (igInfo == null) {
                 log.error("===>>> Unkown interest group ID  "
-                    + theProduct.getFirstAssociatedInterestGroupID() + " provided for association.");
+                        + theProduct.getFirstAssociatedInterestGroupID() + " provided for association.");
                 status.setStatus("Failure");
                 String reason = "Unkown interest group ID: "
-                    + theProduct.getFirstAssociatedInterestGroupID() + " provided for association.";
+                        + theProduct.getFirstAssociatedInterestGroupID() + " provided for association.";
                 status.setReasonForFailure(reason);
                 return status;
             } else {
                 if ((product == null)
-                    || (product.getAssociatedInterestGroupIDs().contains(
+                        || (product.getAssociatedInterestGroupIDs().contains(
                         theProduct.getFirstAssociatedInterestGroupID()) == false)) {
                     notifyOfAssociation = true;
                 }
@@ -820,14 +835,14 @@ public class WorkProductServiceImpl
         theProduct.setUpdatedDate(date);
 
         log.debug("=======> publishIt: interestGroupID="
-            + theProduct.getFirstAssociatedInterestGroupID());
+                + theProduct.getFirstAssociatedInterestGroupID());
 
         // set size in kilobytes
         // TODO do we really need this ???
         theProduct.setSize(theProduct.getProduct().toString().length() / KiloBytes);
 
         String checksum = WorkProductUtil.calculateChecksum(theProduct.getUpdatedDate().toString(),
-            theProduct.getProductVersion(), theProduct.getSize());
+                theProduct.getProductVersion(), theProduct.getSize());
         theProduct.setChecksum(checksum);
 
         if (theProduct.getMimeType() == null)
@@ -858,8 +873,8 @@ public class WorkProductServiceImpl
         if ((newProduct != null) && (notifyOfAssociation)) {
             // notify Comms of the association
             notifyOfWorkProductInterestGroupAssociation(newProduct,
-                newProduct.getFirstAssociatedInterestGroupID(),
-                ProductToInterestGroupAssociationMessage.AssociationType.Associate);
+                    newProduct.getFirstAssociatedInterestGroupID(),
+                    ProductToInterestGroupAssociationMessage.AssociationType.Associate);
         }
 
         if (newProduct != null) {
@@ -881,16 +896,16 @@ public class WorkProductServiceImpl
 
     /**
      * Publish product in response from a request from a joined core.
-     * 
+     *
      * @param wp the wp
      * @param userID the user id
-     * 
+     *
      * @return the product publication status
      * @ssdd
      */
     @Override
     public ProductPublicationStatus publishProducRequesttFromJoinedCore(WorkProduct wp,
-        String userID) {
+                                                                        String userID) {
 
         // we are the incident owning core, who has just received a joined core's request to update
         // or publish a work product associated to the shared incident.
@@ -912,9 +927,9 @@ public class WorkProductServiceImpl
      * Publish product. Verify that the work product is active. If there is an associated incident,
      * then this is a joined core so send the publish request to the owning core. Otherwise this is
      * the owning core, so publish the work product directly.
-     * 
+     *
      * @param theProduct the the product
-     * 
+     *
      * @return the product publication status
      * @ssdd
      */
@@ -922,8 +937,8 @@ public class WorkProductServiceImpl
     public ProductPublicationStatus publishProduct(WorkProduct theProduct) {
 
         log.debug("publishProduct:  productType=" + theProduct.getProductType() + " productID="
-            + theProduct.getProductID() + " productVersion=" + theProduct.getProductVersion()
-            + " core=" + directoryService.getCoreName());
+                + theProduct.getProductID() + " productVersion=" + theProduct.getProductVersion()
+                + " core=" + directoryService.getCoreName());
 
         // check whether it's Inactive or not
         if (theProduct != null && theProduct.getProductID() != null) {
@@ -953,14 +968,14 @@ public class WorkProductServiceImpl
         }
 
         if ((interestGroupInfo != null)
-            && (interestGroupInfo.getOwningCore().equals(directoryService.getCoreName()) != true)) {
+                && (interestGroupInfo.getOwningCore().equals(directoryService.getCoreName()) != true)) {
             // We are a joined core (i.e. joined to this incident) and therefore this a
             // publish/update by a joined core.
             // Send the publish request to owning core for approval first.
 
             log.debug("This an publish/update by a joined core=" + directoryService.getCoreName()
-                + "    ...   Send update request to owning core  "
-                + interestGroupInfo.getOwningCore() + " for approval first.");
+                    + "    ...   Send update request to owning core  "
+                    + interestGroupInfo.getOwningCore() + " for approval first.");
 
             try {
                 ProductPublicationStatus status = new ProductPublicationStatus();
@@ -988,7 +1003,7 @@ public class WorkProductServiceImpl
                 msg.setProductType(theProduct.getProductType());
                 msg.setWorkProduct(wpString);
                 Message<JoinedPublishProductRequestMessage> message = new GenericMessage<JoinedPublishProductRequestMessage>(
-                    msg);
+                        msg);
                 log.debug("===>publishProduct:  sending JoinedPublishProductRequestMessage message");
                 joinedPublishProductRequestChannel.send(message);
 
@@ -1008,7 +1023,7 @@ public class WorkProductServiceImpl
     /**
      * Publish product from owner. This is a joined core that has received publication of a work
      * product associated with a shared incident from the incident owning core
-     * 
+     *
      * @param product the product
      * @ssdd
      */
@@ -1019,17 +1034,17 @@ public class WorkProductServiceImpl
         WorkProduct product = null;
         if (theProduct.getProductID() != null && !theProduct.getProductID().isEmpty()) {
             product = getProduct(theProduct.getProductID());
-            
+
             //for double secure and use the product id from product. 
             if((product !=null) && (product.getProductID() !=null))
             {
-            	theProduct.setProductID(product.getProductID());
-            	
-            	//let try second time.
-            	//theProduct.setId(product.getId());
+                theProduct.setProductID(product.getProductID());
+
+                //let try second time.
+                //theProduct.setId(product.getId());
             }
         }
- 
+
         // publish the new version
         WorkProduct newProduct = doPublish(theProduct, true);
     }
@@ -1041,7 +1056,7 @@ public class WorkProductServiceImpl
         List<WorkProduct> productList = getWorkProductDAO().findAllVersionOfProduct(productID);
         for (WorkProduct product : productList) {
             log.debug("PURGE: Product:/" + product.getProductID() + "/, Version:/"
-                + product.getProductVersion() + "/ ...");
+                    + product.getProductVersion() + "/ ...");
             getWorkProductDAO().makeTransient(product);
         }
     }
@@ -1057,13 +1072,13 @@ public class WorkProductServiceImpl
     }
 
     public void setInterestGroupManagementComponent(
-        InterestGroupManagementComponent interestGroupManagementComponent) {
+            InterestGroupManagementComponent interestGroupManagementComponent) {
 
         this.interestGroupManagementComponent = interestGroupManagementComponent;
     }
 
     public void setJoinedPublishProductRequestChannel(
-        MessageChannel joinedPublishProductRequestChannel) {
+            MessageChannel joinedPublishProductRequestChannel) {
 
         this.joinedPublishProductRequestChannel = joinedPublishProductRequestChannel;
     }
@@ -1085,19 +1100,19 @@ public class WorkProductServiceImpl
 
     /**
      * X path executed.
-     * 
+     *
      * @param productID the product id
      * @param path the path
      * @param namespaceMap the namespace map
-     * 
+     *
      * @return true, if successful
-     * 
+     *
      * @throws InvalidXpathException the invalid xpath exception
      * @ssdd
      */
     @Override
     public boolean xPathExecuted(String productID, String path, Map<String, String> namespaceMap)
-        throws InvalidXpathException {
+            throws InvalidXpathException {
 
         return DocumentUtil.exist(path, getProduct(productID).getProduct(), namespaceMap);
     }
